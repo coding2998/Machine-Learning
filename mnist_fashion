@@ -1,0 +1,41 @@
+import tensorflow as tf
+from tensorflow import keras
+import numpy as np
+
+# Load the Fashion MNIST dataset
+(x_train, y_train), (x_test, y_test) = keras.datasets.fashion_mnist.load_data()
+
+# Preprocess the data
+x_train = x_train.reshape(-1, 28, 28, 1) / 255.0
+x_test = x_test.reshape(-1, 28, 28, 1) / 255.0
+y_train = keras.utils.to_categorical(y_train, num_classes=10)
+y_test = keras.utils.to_categorical(y_test, num_classes=10)
+
+# Create the CNN model
+model = keras.models.Sequential([
+    keras.layers.Conv2D(32, (3, 3), padding='same', activation='relu', input_shape=(28, 28, 1)),
+    keras.layers.MaxPooling2D((2, 2)),
+    keras.layers.Conv2D(64, (3, 3), padding='same', activation='relu'),
+    keras.layers.MaxPooling2D((2, 2)),
+    keras.layers.Flatten(),
+    keras.layers.Dense(128, activation='relu'),
+    keras.layers.Dense(10, activation='softmax')
+])
+
+# Compile the model
+model.compile(optimizer='adam',
+              loss='categorical_crossentropy',
+              metrics=['accuracy'])
+
+# Train the model
+model.fit(x_train, y_train, epochs=10, batch_size=32, validation_data=(x_test, y_test))
+
+# Evaluate the model
+test_loss, test_acc = model.evaluate(x_test, y_test)
+print(f'Test Loss: {test_loss:.4f}')
+print(f'Test Accuracy: {test_acc:.4f}')
+
+''' This code loads the Fashion MNIST dataset, preprocesses the data by reshaping and normalizing it, creates a CNN model using Keras layers, compiles the model with an optimizer and loss function, trains the model on the training data, and finally evaluates the model on the test data.
+
+Make sure you have the necessary libraries (TensorFlow, Keras) installed before running the code. You can install them using pip'''
+
